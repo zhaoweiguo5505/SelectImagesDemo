@@ -1,2 +1,2 @@
-include ':app', ':imageslibrary'
-rootProject.name='ImagesSelectDemo'
+include ':app', ':imageslibrary',
+        rootProject.name = 'ImagesSelectDemo', ':imagepicker'

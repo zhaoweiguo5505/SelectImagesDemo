@@ -53,8 +53,9 @@
         android:id="@+id/rv_folder"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+
         android:layout_marginTop="150dp"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/btn_select_images"
         app:layout_constraintTop_toBottomOf="@id/iv_back" />
 

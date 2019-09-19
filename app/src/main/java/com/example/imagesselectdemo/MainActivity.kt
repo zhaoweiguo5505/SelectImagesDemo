@@ -1,15 +1,21 @@
 package com.example.imagesselectdemo
 
 import android.Manifest
+import android.app.Activity
 import android.content.Intent
-import android.content.pm.PackageManager
+
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.support.v4.app.ActivityCompat
-import android.support.v4.content.ContextCompat
+import android.util.Log
+import android.widget.Toast
+
 import com.example.imageselector.LoadingImage
-import com.example.imageselector.SelectImageActivity
+
 import com.example.imageselector.bean.FolderBean
+import com.example.imageslibrary.utils.ImagesUtils
+import com.lzy.imagepicker.ImagePicker
+import com.lzy.imagepicker.ui.ImageGridActivity
+
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), LoadingImage.DataCallback {
@@ -21,29 +27,18 @@ class MainActivity : AppCompatActivity(), LoadingImage.DataCallback {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         btn_select_image.setOnClickListener {
-            checkPermissionAndCamera()
+            OpenActivity()
         }
     }
 
     private fun OpenActivity() {
-        var intent = Intent(this, SelectImageActivity::class.java)
-        startActivity(intent)
-    }
-
-    private fun checkPermissionAndCamera() {
-        val checkSelfPermission = ContextCompat.checkSelfPermission(
-            application,
-            Manifest.permission.READ_EXTERNAL_STORAGE
-        )
-        if (checkSelfPermission == PackageManager.PERMISSION_GRANTED) {
-            OpenActivity()
-        } else {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA),
-                0x00000011
-            )
-        }
+        ImagePicker.getInstance().isMultiMode = false
+//        ImagePicker.getInstance().isShowCamera = true
+//        val intent = Intent(this, ImageGridActivity::class.java)
+//        startActivityForResult(intent, 5505)
+        ImagesUtils.Builder().setMaxSelect(1)
+            .setCamera(true)
+            .start(this)
     }
 
     override fun onRequestPermissionsResult(
@@ -55,6 +50,15 @@ class MainActivity : AppCompatActivity(), LoadingImage.DataCallback {
             OpenActivity()
         } else {
 
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        Log.e("測試一下$resultCode", "$requestCode")
+        if (resultCode == Activity.RESULT_OK) {
+            val stringArrayListExtra = data?.getStringArrayListExtra(ImagesUtils.SELECT_RESULT)
+            Toast.makeText(this, "${stringArrayListExtra?.size}", Toast.LENGTH_LONG).show()
         }
     }
 }
